@@ -1,4 +1,4 @@
-package com.learning.cars_api.entity;
+package com.learning.cars_api.dto;
 
 
 import lombok.AllArgsConstructor;

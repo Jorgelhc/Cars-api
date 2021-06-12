@@ -1,8 +1,8 @@
 package com.learning.cars_api.controller;
 
 
-import com.learning.cars_api.entity.Cars;
-import com.learning.cars_api.entity.CarsChangeableVariables;
+import com.learning.cars_api.dto.CarsChangeableVariables;
+import com.learning.cars_api.dto.CarsDTO;
 import com.learning.cars_api.repository.CarsRepository;
 import com.learning.cars_api.service.CarsService;
 import lombok.AllArgsConstructor;
@@ -28,13 +28,13 @@ public class CarsController {
 
     @GetMapping(CARS_ENDPOINT_LOCAL)
     @ResponseStatus(code = HttpStatus.OK)
-    public Flux<Cars> getAllItems() {
+    public Flux<CarsDTO> getAllItems() {
         log.info("requesting the list for all cars");
         return carsService.findAll();
     }
 
     @GetMapping(CARS_ENDPOINT_LOCAL + "/{id}")
-    public Mono<ResponseEntity<Cars>> findById(@PathVariable Long id) {
+    public Mono<ResponseEntity<CarsDTO>> findById(@PathVariable Long id) {
         log.info("requesting car with id {}", id);
         return carsService.findByIdCar(id)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))
@@ -43,9 +43,9 @@ public class CarsController {
 
     @PostMapping(CARS_ENDPOINT_LOCAL)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Mono<Cars> createCar(@RequestBody @Valid Cars car) {
+    public Mono<CarsDTO> createCar(@RequestBody @Valid CarsDTO carsDTO) {
         log.info("a new car was created");
-        return carsService.save(car);
+        return carsService.save(carsDTO);
     }
 
     @DeleteMapping(CARS_ENDPOINT_LOCAL + "/{id}")
@@ -57,7 +57,7 @@ public class CarsController {
 
 
     @PatchMapping(CARS_ENDPOINT_LOCAL + "/{id}/modifyCarsName")
-    public Mono<ResponseEntity<Cars>> modifyCarsName(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
+    public Mono<ResponseEntity<CarsDTO>> modifyCarsName(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
         log.info("modify cars name with id {}", id);
         return carsService.modifyCarsName(id, value)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))
@@ -65,7 +65,7 @@ public class CarsController {
     }
 
     @PatchMapping(CARS_ENDPOINT_LOCAL + "/{id}/modifyCarsBrand")
-    public Mono<ResponseEntity<Cars>> modifyCarsBrand(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
+    public Mono<ResponseEntity<CarsDTO>> modifyCarsBrand(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
         log.info("modify cars brand with id {}", id);
         return carsService.modifyCarsBrand(id, value)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))
@@ -73,7 +73,7 @@ public class CarsController {
     }
 
     @PatchMapping(CARS_ENDPOINT_LOCAL + "/{id}/modifyCarsYear")
-    public Mono<ResponseEntity<Cars>> modifyCarsYear(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
+    public Mono<ResponseEntity<CarsDTO>> modifyCarsYear(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
         log.info("modify cars year with id {}", id);
         return carsService.modifyCarsYear(id, value)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))
@@ -81,7 +81,7 @@ public class CarsController {
     }
 
     @PatchMapping(CARS_ENDPOINT_LOCAL + "/{id}/modifyCarsRarity")
-    public Mono<ResponseEntity<Cars>> modifyCarsRarity(@PathVariable Long id) {
+    public Mono<ResponseEntity<CarsDTO>> modifyCarsRarity(@PathVariable Long id) {
         log.info("modify cars rarity with id {}", id);
         return carsService.modifyCarsRarity(id)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))

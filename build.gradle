@@ -24,7 +24,8 @@ dependencies {
 	implementation group: 'software.amazon.awssdk', name: 'dynamodb', version: '2.16.56'
 	implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.0.4'
 	implementation 'junit:junit:4.13.1'
-
+	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.4.2.Final'
+	annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.4.2.Final'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

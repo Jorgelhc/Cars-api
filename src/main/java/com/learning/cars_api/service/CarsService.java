@@ -1,8 +1,10 @@
 package com.learning.cars_api.service;
 
 
-import com.learning.cars_api.entity.CarsChangeableVariables;
+import com.learning.cars_api.dto.CarsChangeableVariables;
+import com.learning.cars_api.dto.CarsDTO;
 import com.learning.cars_api.entity.Cars;
+import com.learning.cars_api.mapper.CarsMapper;
 import com.learning.cars_api.repository.CarsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,20 +16,21 @@ import reactor.core.publisher.Mono;
 public class CarsService {
 
     private final CarsRepository carsRepository;
+    private final CarsMapper carsMapper;
 
+    public Flux<CarsDTO> findAll() {
 
-    public Flux<Cars> findAll() {
-
-        return Flux.fromIterable(this.carsRepository.findAll());
+        return Flux.fromIterable(carsRepository.findAll()).map(carsMapper::toDTO);
 
     }
 
-    public Mono<Cars> findByIdCar(Long id) {
-        return Mono.justOrEmpty(this.carsRepository.findById(id));
+    public Mono<CarsDTO> findByIdCar(Long id) {
+        return Mono.justOrEmpty(carsRepository.findById(id)).map(carsMapper::toDTO);
     }
 
-    public Mono<Cars> save(Cars cars) {
-        return Mono.justOrEmpty(this.carsRepository.save(cars));
+    public Mono<CarsDTO> save(CarsDTO carsDTO) {
+        Cars cars = carsMapper.toModel(carsDTO);
+        return Mono.justOrEmpty(carsMapper.toDTO(carsRepository.save(cars)));
     }
 
     public Mono<Boolean> deleteById(Long id) {
@@ -36,39 +39,42 @@ public class CarsService {
         return Mono.just(true);
     }
 
-    public Mono<Cars> modifyCarsName(Long id, CarsChangeableVariables value) {
+    public Mono<CarsDTO> modifyCarsName(Long id, CarsChangeableVariables value) {
 
         Cars cars = carsRepository.findById(id).orElseThrow();
         cars.setName(value.getValue());
-
-        return Mono.just(carsRepository.save(cars));
+        CarsDTO carsDTO = carsMapper.toDTO(carsRepository.save(cars));
+        return Mono.just(carsDTO);
 
     }
 
-    public Mono<Cars> modifyCarsBrand(Long id, CarsChangeableVariables value) {
+    public Mono<CarsDTO> modifyCarsBrand(Long id, CarsChangeableVariables value) {
 
         Cars cars = carsRepository.findById(id).orElseThrow();
         cars.setBrand(value.getValue());
+        CarsDTO carsDTO = carsMapper.toDTO(carsRepository.save(cars));
 
-        return Mono.just(carsRepository.save(cars));
+        return Mono.just(carsDTO);
 
     }
 
-    public Mono<Cars> modifyCarsYear(Long id, CarsChangeableVariables value) {
+    public Mono<CarsDTO> modifyCarsYear(Long id, CarsChangeableVariables value) {
 
         Cars cars = carsRepository.findById(id).orElseThrow();
         cars.setYear(value.getYear());
+        CarsDTO carsDTO = carsMapper.toDTO(carsRepository.save(cars));
 
-        return Mono.just(carsRepository.save(cars));
+        return Mono.just(carsDTO);
 
     }
 
-    public Mono<Cars> modifyCarsRarity(Long id) {
+    public Mono<CarsDTO> modifyCarsRarity(Long id) {
 
         Cars cars = carsRepository.findById(id).orElseThrow();
         cars.setRare(!cars.isRare());
+        CarsDTO carsDTO = carsMapper.toDTO(carsRepository.save(cars));
 
-        return Mono.just(carsRepository.save(cars));
+        return Mono.just(carsDTO);
 
     }
 
