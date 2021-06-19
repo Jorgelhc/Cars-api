@@ -8,12 +8,15 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.learning.cars_api.constants.CarsConstant;
+import reactor.core.publisher.Flux;
 
 import static com.learning.cars_api.constants.CarsConstant.TABLE_NAME;
 
 public class CarData {
 
-    public static void main(String[] args) throws Exception {
+
+
+        public static Flux<PutItemOutcome> createFakeCars() {
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(
@@ -52,11 +55,7 @@ public class CarData {
                 .withNumber("year", 1999)
                 .withBoolean("rare", true);
 
-
-        PutItemOutcome outcome = table.putItem(car);
-        PutItemOutcome outcome2 = table.putItem(car2);
-        PutItemOutcome outcome3 = table.putItem(car3);
-        PutItemOutcome outcome4 = table.putItem(car4);
+         return   Flux.just(table.putItem(car),table.putItem(car2),table.putItem(car3),table.putItem(car4));
 
     }
 }

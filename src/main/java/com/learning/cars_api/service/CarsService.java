@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 public class CarsService {
 
     private final CarsRepository carsRepository;
-    private final CarsMapper carsMapper;
+    private final CarsMapper carsMapper = CarsMapper.INSTANCE;
 
     public Flux<CarsDTO> findAll() {
 
@@ -31,6 +31,30 @@ public class CarsService {
     public Mono<CarsDTO> save(CarsDTO carsDTO) {
         Cars cars = carsMapper.toModel(carsDTO);
         return Mono.justOrEmpty(carsMapper.toDTO(carsRepository.save(cars)));
+    }
+
+    public Flux<?> createFakeCars() {
+
+
+        Cars car1 = new Cars(1L, "Corsa", "Chevrolet", 1998, false);
+        Cars car2 = new Cars(2L, "Gol", "volkswagen", 2010, false);
+        Cars car3 = new Cars(3L, "Uno", "Fiat", 2000, false);
+        Cars car4 = new Cars(4L, "Mustang Shelby", "Ford", 1999, true);
+        Flux<Cars> flux = Flux.just(car1, car2, car3, car4);
+        return flux.map(carsRepository::save).map(carsMapper::toDTO);
+
+        //Another way:
+
+
+//        return CarData.createFakeCars();
+
+
+    }
+
+    public Mono<Boolean> deleteAll() {
+
+        carsRepository.deleteAll();
+        return Mono.just(true);
     }
 
     public Mono<Boolean> deleteById(Long id) {

@@ -3,10 +3,10 @@ package com.learning.cars_api.controller;
 
 import com.learning.cars_api.dto.CarsChangeableVariables;
 import com.learning.cars_api.dto.CarsDTO;
-import com.learning.cars_api.repository.CarsRepository;
 import com.learning.cars_api.service.CarsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,8 @@ import static com.learning.cars_api.constants.CarsConstant.CARS_ENDPOINT_LOCAL;
 @Slf4j
 public class CarsController {
 
-    CarsService carsService;
-    CarsRepository carsRepository;
+    @Autowired
+    private final CarsService carsService;
 
     @GetMapping(CARS_ENDPOINT_LOCAL)
     @ResponseStatus(code = HttpStatus.OK)
@@ -48,6 +48,13 @@ public class CarsController {
         return carsService.save(carsDTO);
     }
 
+    @PostMapping(CARS_ENDPOINT_LOCAL + "/createFakeCars")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public Flux<?> createFakeCars() {
+        log.info("a new car was created");
+        return carsService.createFakeCars();
+    }
+
     @DeleteMapping(CARS_ENDPOINT_LOCAL + "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
@@ -55,6 +62,12 @@ public class CarsController {
         log.info("Delete car with id {}", id);
     }
 
+    @DeleteMapping(CARS_ENDPOINT_LOCAL + "/All")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteAll() {
+        carsService.deleteAll();
+        log.info("Delete all cars");
+    }
 
     @PatchMapping(CARS_ENDPOINT_LOCAL + "/{id}/modifyCarsName")
     public Mono<ResponseEntity<CarsDTO>> modifyCarsName(@PathVariable Long id, @RequestBody @Valid CarsChangeableVariables value) {
